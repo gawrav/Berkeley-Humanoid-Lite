@@ -1,4 +1,4 @@
-policy_checkpoint_path: "../../checkpoints/policy_biped_50hz.onnx"
+policy_checkpoint_path: "../../checkpoints/51000/policy.onnx"
 ip_robot_addr: 127.0.0.1
 ip_policy_obs_port: 10000
 ip_host_addr: 127.0.0.1
