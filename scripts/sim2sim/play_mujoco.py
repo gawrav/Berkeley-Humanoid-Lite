@@ -5,6 +5,7 @@ import numpy as np
 import torch
 
 from berkeley_humanoid_lite_lowlevel.policy.rl_controller import RlController
+from berkeley_humanoid_lite_lowlevel.policy.safety import SafetyShim, JOINT_POSITION_LOWER, JOINT_POSITION_UPPER
 from berkeley_humanoid_lite.environments import MujocoSimulator, Cfg
 
 
@@ -29,6 +30,13 @@ def main():
     # Default actions for fallback
     default_actions = np.array(cfg.default_joint_positions, dtype=np.float32)[robot.cfg.action_indices]
 
+    safety = SafetyShim(
+        default_positions=np.array(cfg.default_joint_positions, dtype=np.float32),
+        joint_limits_lower=JOINT_POSITION_LOWER,
+        joint_limits_upper=JOINT_POSITION_UPPER,
+        dt=cfg.policy_dt,
+    )
+
     # Main control loop
     while True:
         # Send observations and receive actions
@@ -37,6 +45,11 @@ def main():
         # Use default actions if no actions received
         if actions is None:
             actions = default_actions
+
+        actions, _ = safety.check(actions)
+        if safety.emergency_stop:
+            print("Emergency stop triggered")
+            break
 
         # Execute step
         actions = torch.tensor(actions)
