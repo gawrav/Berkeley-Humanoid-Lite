@@ -159,10 +159,13 @@ def main():
         "history_length": env_cfg.observations.policy.actions.history_length,
 
         # === Command configurations ===
-        # sample a command
-        "command_velocity": env_cfg.observations.policy.velocity_commands.func(
-            env.unwrapped, env_cfg.observations.policy.velocity_commands.params["command_name"]
-            )[0].tolist(),
+        "command_velocity": (
+            env_cfg.observations.policy.velocity_commands.func(
+                env.unwrapped, env_cfg.observations.policy.velocity_commands.params["command_name"]
+            )[0].tolist()
+            if hasattr(env_cfg.observations.policy, "velocity_commands")
+            else [0.0, 0.0, 0.0]
+        ),
 
         # === Action configurations ===
         "num_actions": env.action_space.shape[-1],

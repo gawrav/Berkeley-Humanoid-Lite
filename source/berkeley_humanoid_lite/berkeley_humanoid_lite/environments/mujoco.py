@@ -1,6 +1,7 @@
 
 import time
 import threading
+from pathlib import Path
 
 import numpy as np
 import torch
@@ -8,7 +9,7 @@ import mujoco
 import mujoco.viewer
 
 from berkeley_humanoid_lite_lowlevel.policy.config import Cfg
-from berkeley_humanoid_lite_lowlevel.policy.gamepad import Se2Gamepad
+from berkeley_humanoid_lite_lowlevel.policy.gamepad_direct import Se2Gamepad
 
 
 def quat_rotate_inverse(q: torch.Tensor, v: torch.Tensor) -> torch.Tensor:
@@ -33,11 +34,16 @@ class MujocoEnv:
     def __init__(self, cfg: Cfg):
         self.cfg = cfg
 
+        # Get the absolute path to the project root
+        project_root = Path(__file__).resolve().parents[4]
+
         # Load appropriate MJCF model based on robot configuration
         if cfg.num_joints == 22:
-            self.mj_model = mujoco.MjModel.from_xml_path("source/berkeley_humanoid_lite_assets/data/mjcf/bhl_scene.xml")
+            mjcf_path = project_root / "source/berkeley_humanoid_lite_assets/data/robots/berkeley_humanoid/berkeley_humanoid_lite/mjcf/bhl_scene.xml"
         else:
-            self.mj_model = mujoco.MjModel.from_xml_path("source/berkeley_humanoid_lite_assets/data/mjcf/bhl_biped_scene.xml")
+            mjcf_path = project_root / "source/berkeley_humanoid_lite_assets/data/robots/berkeley_humanoid/berkeley_humanoid_lite/mjcf/bhl_biped_scene.xml"
+
+        self.mj_model = mujoco.MjModel.from_xml_path(str(mjcf_path))
 
         self.mj_data = mujoco.MjData(self.mj_model)
         self.mj_model.opt.timestep = self.cfg.physics_dt

@@ -93,3 +93,18 @@ def track_ang_vel_z_world_exp(
     asset = env.scene[asset_cfg.name]
     ang_vel_error = torch.square(env.command_manager.get_command(command_name)[:, 2] - asset.data.root_ang_vel_w[:, 2])
     return torch.exp(-ang_vel_error / std**2)
+
+
+def upright_reward_exp(
+    env: ManagerBasedRLEnv, std: float, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")
+) -> torch.Tensor:
+    """Reward for being upright using exponential kernel.
+
+    Uses projected gravity to measure how upright the robot is. When perfectly upright,
+    the projected gravity xy components are zero and the reward is 1.0. As the robot
+    tilts, the reward decays exponentially.
+    """
+    asset = env.scene[asset_cfg.name]
+    # projected_gravity_b[:, :2] are the x,y components - zero when upright
+    orientation_error = torch.sum(torch.square(asset.data.projected_gravity_b[:, :2]), dim=1)
+    return torch.exp(-orientation_error / std**2)

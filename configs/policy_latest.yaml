@@ -1,10 +1,10 @@
-policy_checkpoint_path: "checkpoints/policy_biped_50hz.onnx"
+policy_checkpoint_path: /home/gaurav/code/Berkeley-Humanoid-Lite/logs/rsl_rl/biped_v2/2026-02-20_19-27-31/exported/policy.onnx
 ip_robot_addr: 127.0.0.1
 ip_policy_obs_port: 10000
 ip_host_addr: 127.0.0.1
 ip_policy_acs_port: 10001
 control_dt: 0.004
-policy_dt: 0.02
+policy_dt: 0.04
 physics_dt: 0.0005
 cutoff_freq: 1000
 num_joints: 12
@@ -48,18 +48,18 @@ joint_kd:
 - 2.0
 - 2.0
 effort_limits:
-- 5.0
-- 5.0
-- 5.0
-- 5.0
-- 5.0
-- 5.0
-- 5.0
-- 5.0
-- 5.0
-- 5.0
-- 5.0
-- 5.0
+- 4.0
+- 4.0
+- 4.0
+- 4.0
+- 4.0
+- 4.0
+- 4.0
+- 4.0
+- 4.0
+- 4.0
+- 4.0
+- 4.0
 default_base_position:
 - 0.0
 - 0.0
@@ -80,9 +80,9 @@ default_joint_positions:
 num_observations: 45
 history_length: 0
 command_velocity:
-- -0.419607937335968
-- -0.05113796889781952
-- -0.678446888923645
+- -0.4767909049987793
+- -0.24942532181739807
+- -0.7261240482330322
 num_actions: 12
 action_scale: 0.25
 action_indices:
@@ -98,5 +98,5 @@ action_indices:
 - 9
 - 10
 - 11
-action_limit_lower: -10000
-action_limit_upper: 10000
+action_limit_lower: -3.0
+action_limit_upper: 3.0

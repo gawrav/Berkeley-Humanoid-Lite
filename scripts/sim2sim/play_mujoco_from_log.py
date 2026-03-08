@@ -193,8 +193,9 @@ def run_mujoco(cfg, controller, state, max_steps):
     mj_data.qpos[7:] = initial_pos
     mj_data.qvel[:] = 0
 
-    # Find appropriate base height by settling under gravity briefly
-    mj_data.qpos[2] = 0.35  # start above ground
+    # Find appropriate base height by settling under gravity
+    # Start low to minimize drop distance — MuJoCo will push up if clipping ground
+    mj_data.qpos[2] = 0.10
     mujoco.mj_forward(mj_model, mj_data)
 
     # Settle: apply PD to hold logged positions while gravity finds ground contact
